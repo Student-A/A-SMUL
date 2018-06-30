@@ -16,6 +16,8 @@ namespace A
     CONSTANT_OF,
     VALUE_OF,
 
+    ASSIGN,
+    
     ADD,
     SUBTRACT,
     DIVIDE,
@@ -28,7 +30,9 @@ namespace A
     JUMP,
     TEST,
 
-    CONSTRUCT,
+    LITERAL,
+    REFERENCE,
+    STORED,
     NUMBER_OF,
     TEXT_OF,
     LIST_OF,

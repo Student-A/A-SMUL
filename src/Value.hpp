@@ -25,7 +25,7 @@ namespace A
   ENUM_FLAG_BIN_OPERATOR(ValueType, |)
   ENUM_FLAG_UN_OPERATOR(ValueType, ~)
   
-  clAss Value
+  class Value
   {
   public:
     Value(void *data, ValueType type) : _type(type)
@@ -48,7 +48,7 @@ namespace A
       }
     }
 
-    void Value::set()
+    void set()
     {
       _valueType = ValueType::NONE;
       if ((_valueType & _type) != _valueType){
@@ -56,7 +56,7 @@ namespace A
       }
     }
     
-    void Value::set(double d)
+    void set(double d)
     {
       _valueType = ValueType::NUMBER;
       if ((_valueType & _type) != _valueType){
@@ -65,7 +65,7 @@ namespace A
       _value = d;
     }
 
-    void Value::set(bool b)
+    void set(bool b)
     {
       _valueType = ValueType::SWITCH;
       if ((_valueType & _type) != _valueType){
@@ -74,7 +74,7 @@ namespace A
       _value = b;
     }
 
-    void Value::set(std::string s)
+    void set(std::string s)
     {
       _valueType = ValueType::TEXT;
       if ((_valueType & _type) != _valueType){
@@ -83,7 +83,7 @@ namespace A
       _value = s;
     }
 
-    double Value::get()
+    double get()
     {
       if ((ValueType::NUMBER & _type) != ValueType::NUMBER){
 	//[throw wrong type]
@@ -91,7 +91,7 @@ namespace A
       return std::get<double>(_value);
     }
 
-    bool Value::get()
+    bool get()
     {
       if ((ValueType::SWITCH & _type) != ValueType::SWITCH){
 	//[throw wrong type]
@@ -99,7 +99,7 @@ namespace A
       return std::get<bool>(_value);
     }
 
-    std::string Value::get()
+    std::string get()
     {
       if ((ValueType::TEXT & _type) != ValueType::TEXT){
 	//[throw wrong type]
@@ -107,7 +107,9 @@ namespace A
       return std::get<std::string>(_value);
     }
 
-    
+    bool hasTypes(usngien)
+    {
+    }
     
   private:
     std::variant<std::string,

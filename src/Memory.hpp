@@ -30,6 +30,11 @@ namespace A
     {
       _memoryBlocks.push_back(new MemoryBlock(size));
     }
+
+    MemoryBlock &getLastBlockRef()
+    {
+      return *_memoryBlocks.back();
+    }
     
   private:
     std::vector<MemoryBlock*> _memoryBlocks;

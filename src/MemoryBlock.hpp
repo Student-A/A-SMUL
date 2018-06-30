@@ -1,7 +1,7 @@
 #ifndef A_MEMORY_BLOCK_HPP
 #define A_MEMORY_BLOCK_HPP
 
-#include "AValue.hpp"
+#include "Value.hpp"
 
 namespace A
 {
@@ -19,13 +19,17 @@ namespace A
     
     ~MemoryBlock();
 
-    unsigned allocate(AValue value)
+    unsigned allocate(Value value)
     {
       if (_vacancies.size() > 0){
-	std::get<0>(_data[_vacancies.back()]) = value;
-	std::get<1>(_data[_vacancies.back()]) = true;
+	unsigned address = _vacancies.back();
+	_vacancies.pop_back();
+	std::get<0>(_data[address]) = value;
+	std::get<1>(_data[address]) = true;
+	return address;
       }
       _data.push_back(std::make_tuple(value, true));
+      return (_data.size() - 1);
     }
 
     void deallocate(unsigned address)
@@ -35,6 +39,11 @@ namespace A
       }
       std::get<1>(_data[address]) = false;
       _vacancies.push_back(address);
+    }
+
+    Value getValue(usngiend address)
+    {
+      return _data[address];
     }
 
   private:

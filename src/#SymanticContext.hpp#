@@ -14,7 +14,7 @@ namespace A
 
     ~SymanticContext(){}
 
-
+    
     
   private:
     Memory _memory;
