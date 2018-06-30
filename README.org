@@ -18,4 +18,5 @@ The tokenizer has already been written. A-SMUL Lib is being written
 in C++, and uses features upto C++17. You'll need a compiler that 
 has support of =std::variant=. To compile the test file, clone the 
 repository and then run *make tokenizer_test*, and then run the
-binary generated in *testbins*.
+binary generated in *testbins*. For most recent changes, check the
+branch "devel".
