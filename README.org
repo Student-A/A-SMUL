@@ -1,0 +1,21 @@
+#+TITLE: A-SMUL Lib
+
+* What is this about?
+*A-SMUL*, stands for /A-Script/Markup Language/ is a work-in-progress 
+programming language with two components; a markup language and a
+scripting language. *A-SMUL Lib* is a library that provides a
+parser, a compiler and a virtual machine for using A-SMUL.
+
+* Goal
+The main goal is to have natural compatablility in syntax between 
+the scripting and the markup parts without additional delimeters,
+all while providing sufficient performance comparable to Lua's and
+ease of integration into written software. This normally requires 
+a parser that is very highly context-sensitive.
+
+* Progress
+The tokenizer has already been written. A-SMUL Lib is being written 
+in C++, and uses features upto C++17. You'll need a compiler that 
+has support of =std::variant=. To compile the test file, clone the 
+repository and then run *make tokenizer_test*, and then run the
+binary generated in *testbins*.
