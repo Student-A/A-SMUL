@@ -1,7 +1,7 @@
 #ifndef A_SYMANTIC_CONTEXT
 #define A_SYMANTIC_CONTEXT
 
-#include "AMemory.hpp"
+#include "Memory.hpp"
 
 namespace A
 {
@@ -14,7 +14,7 @@ namespace A
 
     ~SymanticContext(){}
 
-    
+
     
   private:
     Memory _memory;

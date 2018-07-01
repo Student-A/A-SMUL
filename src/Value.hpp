@@ -107,7 +107,7 @@ namespace A
       return std::get<std::string>(_value);
     }
 
-    bool hasTypes(usngien)
+    bool hasTypes(unsigned)
     {
     }
     

@@ -4,6 +4,7 @@
 namespace A
 {
   enum CodeInstruction{
+    NONE,
     PROGRAM_START,
     PROGRAM_END,
     EXIT,
