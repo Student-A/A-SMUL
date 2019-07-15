@@ -10,9 +10,10 @@ namespace A
   class CodeExecutable
   {
   public:
-    CodeExecutable(Memory *memory, std::vector<CodeInstruction> instructions, std::vector<Value> literals)
+    CodeExecutable(Memory *memory, std::vector<CodeInstruction> instructions, std::vector<Value> literals) : _instructionPointer(instructions)
     {
       _instructions = instructions;
+      
     }
 
     ~CodeExecutable();
@@ -101,20 +102,10 @@ namespace A
     
   private:
     std::vector<CodeInstruction> _instructions;
+    InstructionPointer _instructionPointer;
     std::vector<Value> _stack;
-    unsigned _currentInstructionAddress{0};
     std::vector<Value> _literals;
     Memory _memory;
-
-    CodeInstruction &getCurrentInstruction(int offset) const
-    {
-      return _instruction[_currentInstructionAddress + offset];
-    }
-
-    CodeInstruction &getCurrentInstruction() const
-    {
-      return getCurrentInstruction(0);
-    }
 
     const Value getLiteral()
     {
