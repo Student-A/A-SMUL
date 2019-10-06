@@ -5,6 +5,7 @@
 #define A_SCRIPT_TOKEN_TYPE_PAIR(x) {ScriptTokenType::x , #x}
 #define A_RVALUE_TOKEN_TYPE_PAIR(x) {RValueTokenType::x , #x}
 
+// these are just mappings from variables names to their own strings for error report
 
 namespace A
 {

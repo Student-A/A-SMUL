@@ -1,0 +1,149 @@
+#+TITLE: Code Snippet
+#+AUTHOR: Aiman
+#+OPTIONS: toc:nil
+#+LATEX_HEADER: \usepackage[utf8]{inputenc}
+#+LATEX_HEADER: \usepackage{xcolor}
+#+LATEX_HEADER: \newcommand{\alet}{\textbf{\color{blue}let\ }}
+#+LATEX_HEADER: \newcommand{\comment}[1]{\textit{\color{gray} //\  #1}}
+#+LATEX_HEADER: \newcommand{\atext}[1]{\textit{\color{green} #1}}
+#+LATEX_HEADER: \newcommand{\akey}[1]{\textbf{\color{red} #1\ }}
+#+LATEX_HEADER: \newcommand{\atab}{\phantom{ww}}
+#+LATEX_HEADER: \newcommand{\markup}[1]{\textbf{\color{magenta} #1\ }}
+
+* A-SMUL Code Structure
+\begin{flalign*}
+ \alet n = 1; \comment{Howdy}\\
+\end{flalign*}
+
+** Comments
+A comment is simply any line that starts with "//".
+\begin{align*}
+&\comment{This is a commment. Hodgepodge} \hspace{10cm}
+\end{align*}
+
+** Variables, Aliases
+In general, one defines a new variable by:
+\begin{align*}
+\alet \underbrace{\textbf{<qualifier>}\  \textbf{<type>}}_{optional}\ \text{<name>} = \text{<rvalue>} \hspace{10cm}
+\end{align*}
+One can define an \emph{alias}; a reference to another variable by using the arrow "=>" instead of the equal sign "=":
+\begin{align*}
+\alet \underbrace{\textbf{<qualifier>}\  \textbf{<type>}}_{optional}\ \text{<name>} => \text{<lvalue>} \hspace{10cm}
+\end{align*}
+By "lvalue", we mean a value that can sit in the left hand side of an assignement, such as a variable identifier or an identifier of an element in a defined container.
+
+The type of a value can be:
+- \textbf{number}: A real number; something between $-\infty$ and $\infty$.
+- \textbf{integer}: These are the "counting" numbers: $\cdots, -54319, \cdots, -2, -1, 0, 1, 2, 124135,  \cdots$
+- \textbf{text}: Should come inside quotes: e.g. "This is some text".
+- \textbf{none}: Empty. Void. Nothing at all. The only value of type none is \textbf{None}.  
+- \textbf{bool}: A boolean can take one of two values, \textbf{True} or \textbf{False}.
+- \textbf{variant}: A variant can take any value at all of all types.
+- \textbf{list[<type>]}: A list of values of a given type.
+- Combined types: Types can be combined together using \textbf{|}. For example, a variable of type \textbf{bool|none} can contain \textbf{True}, \textbf{False} or \textbf{None}.
+- Other types include:
+  - Tuples: \textbf{tuple[<type1>, $\cdots$, <typeN>]}
+  - Dictionaries: \textbf{dictionary[<key type> => <value type>]}
+  - Bitfields: \textbf{bitfield}
+  - Anonymous functions: \textbf{function[<argument type>:<return type>]}.
+
+If a type is not specified in a variable definition, then the type of rvalue is assumed.
+
+
+** Flow control (if, else, while ..etc)
+For flow control, the most general form of an if clause is the usual:
+\begin{align*}
+&\akey{if} \text{<condition>} \akey{\ do}\hspace{10cm}\\
+&\atab \text{<commands>}\\
+&\akey{elseif} \text{<condition>} \akey{\ do}\\
+&\atab \text{<commands>}\\
+&\akey{else}\\
+&\atab \text{<commands>}\\
+&\akey{end}
+\end{align*}
+Whereas a general while clause is written as:
+\begin{align*}
+&\akey{while} \text{<condition>} \akey{\ do}\hspace{10cm}\\
+&\atab \text{<commands>}\\
+&\akey{end}
+\end{align*}
+
+** Namespaces
+One can create namespaces using:
+\begin{align*}
+&\akey{namespace} \text{<namespace name>}\hspace{10cm}\\
+&\atab \text{<commands and definitions>}\\
+&\akey{end}
+\end{align*}
+Accessing variables defined in a namespace is done via ":". For example, if a variable $\textbf{a}$ is defined in a namespace called $\textbf{hodgepodge}$, then the variable can be accessed as $\textbf{hodgepodge:a}$.
+
+** Markup
+The key feature of A-SMUL is that it seamlessly integrates markup structures into the language. In place of commands, one can place one of the following markup components:
+- Main components:
+       \begin{align*}
+       &\markup{\{<name>\}}\hspace{10cm}\\
+       &\ \ <switchname1>|switchname2\underbrace{:\text{<bool\_rvalue>}}_{optional}|<switchname3>\\
+       &\atab\textbf{<tagname1>} = \text{<,rvalues>} \atab\textbf{<tagname2>} = \text{<,rvalues>}\\
+       &\atab\comment{With possibility to add tags, switches, or nest other components}\\
+       &\markup{\{/<name>\}}
+       \end{align*}
+- Sub components:
+       \begin{align*}
+       &\markup{<name>[}\hspace{10cm}\\
+       &\atab\comment{Tags, switches, nested components}\\
+       &\markup{]}
+       \end{align*}
+- Id components:
+       \begin{align*}
+       &\markup{[<id name>= <const rvalue of type text|integer>]}\hspace{10cm}\\
+       &\atab\comment{Tags, switches, nested components}\\
+       &\markup{[\/<id name>]}
+       \end{align*}
+
+There is no symantic/real difference between a main component and a subcomponent. The difference in syntax is for applications of A-SMUL to take advantage of. 
+
+To access data in the markup structures in the components, one begins with $\textbf{@}$. Then main and sub-components are namespaces that contains variables of type $\textbf{tuple[<,rvalue types>]}$ for tags, and functions that return a value of type $\textbf{bool}$ for switches (returns \textbf{True} if switch is simply placed there. And to the rvalue given to it if there is one.). For example, to access the first value (0th value) given to a tag called \textbf{mytag} inside a main component called $\textbf{mymain}$, one writes $\textbf{@mymain:mytag[0]}$. Id components are dictionaries with keys of type $\textbf{text|integer}$.
+
+** Example
+   \begin{align*}
+   &\comment{A function definition}\hspace{10cm}\\
+   &\akey{function} \text{say\_hello}(\textbf{text\ }\text{name} ) \textbf{\ none}:\\
+   &\atab \text{print}(\atext{"Hello"}+\text{name})\\
+   &\atab \akey{return} \text{\ value}\\
+   &\akey{end}\\
+   &\\
+   &\comment{Some variable definitions}\\
+   &\alet \textbf{const number\ } \text{PI} = 3.14\\
+   &\alet \textbf{text\ } \text{hi} = \atext{"Hi"}\\
+   &\alet \textbf{bool\ } \text{is\_happy} = \textbf{True}\\
+   &\alet \textbf{bool|none\ } \text{user\_preference} = \textbf{None}\\
+   &\alet \textbf{list[number|text]\ } \text{some\_list} = \text{[2, 1.2, "blabla"]}\\
+   &\alet \textbf{list[number|text]\ } \text{some\_list} = \text{[2, 1.2, "blabla"]}\\
+   &\alet \textbf{dictionary[text|number\ =>\ variant]\ } \text{some\_dict} = \text{[1 => \atext{"Hello"}, "b" => \textbf{True}]}\\
+   &\alet \textbf{tuple[integer, text, bool]\ } \text{some\_3\_tuple} = \text{\{-1, \atext{"Howdy"}, \textbf{False}\}}\\
+   &\comment{An alias of hi}\\
+   &\alet \text{hello} => \text{hi}
+   \end{align*}
+   \begin{align*}
+   &\comment{Anonymous functions}\hspace{10cm}\\
+   &\alet \textbf{function[number:tuple[number,number]]\ } \text{my\_lambda} = \\
+   &\atab\atab\atab\atab\atab\atab\text{<\textbf{number} x: \textbf{tuple[number, number]} \{x/2, \text{sqrt(x)}\} ;>}\\
+   &\comment{Alternatively, type inference should allow for:}\\
+   &\alet \textbf{function[number:tuple[number,number]]\ } \text{my\_lambda2} = \text{<x: \{x/2, \text{sqrt(x)}\} ;>}\\
+   &\comment{Or even:}\\
+   &\alet \text{my\_lambda3} = \text{<\textbf{number} x: \{x*x, 2*x\} ;>}
+   \end{align*}
+   \begin{align*}
+   &\markup{\{mybutton\}}\hspace{10cm}\\
+   &\ \ disabled: \text{user\_preference}\\
+   &\atab\textbf{position} = \text{20, 30} \atab\textbf{button\_label} = \text{hello} \atab \textbf{colour} = \atext{"purple"}\\
+   &\atab\textbf{on\_click} = \text{say\_hello}\\
+   &\markup{\{/mybutton\}}\\
+   &\\
+   &\alet \textbf{tuple[number, number]\ } \text{position} = \markup{@mybutton:position}\\
+   &\akey{if}\ \text{PI} < 22/7\ \akey{do}\\
+   &\atab\markup{@mybutton:on\_click}(\atext{" Jacky"})\\
+   &\akey{else}\\
+   &\atab \text{print(some\_dict[1])}\\
+   &\akey{end}
+   \end{align*}

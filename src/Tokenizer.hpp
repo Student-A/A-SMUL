@@ -98,11 +98,11 @@ namespace A
     
     // SCRIPT
     Token getScriptCommandToken(SyntacticContext &ctx);
-
     Token getScriptCommandToken(SyntacticContext &ctx, std::string &lookaheadWord, FilePointer &pos);
     
     Token getUndefinedToken(SyntacticContext &ctx);
 
+    // General
     const std::string getName(FilePointer &fp);
 
     const std::string getWord(FilePointer &fp);
