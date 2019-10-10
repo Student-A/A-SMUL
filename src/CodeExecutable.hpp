@@ -2,7 +2,7 @@
 #define A_CODE_EXECUTABLE_HPP
 
 #include "CodeInstructions.hpp"
-#include "Memory.hpp"
+#include "SymanticContext.hpp"
 #include "Value.hpp"
 
 namespace A
@@ -10,21 +10,19 @@ namespace A
   class CodeExecutable
   {
   public:
-    CodeExecutable(Memory *memory, std::vector<CodeInstruction> instructions, std::vector<Value> literals) : _instructionPointer(instructions)
+    CodeExecutable(std::vector<CodeInstruction> instructions, std::vector<Value> literals) : _instructions(instructions), _literals(literals)
     {
-      _instructions = instructions;
-      
     }
 
     ~CodeExecutable();
     
-    void execute()
+    void execute(SymanticContext &symContext)
     {
       CodeInstruction inst = _instructions[_currentInstructionAddress];
       if (inst == PROGRAM_START)
     }
 
-    void execute_cycle()
+    void executeCycle(SymanticContext &symContext)
     {
       CodeInstruction inst = _instructions[_currentInstructionAddress];
       
@@ -37,16 +35,15 @@ namespace A
       }
     }
 
-    void step()
+    void step(SymanticContext &symContext)
     {
-
       if (getCurrentInstruction() == CodeInstruction::PROGRAM_START){
-	_memory.allocateBlock(100);
+        symContext.getMemoryRef().allocateBlock(100);
       }
       
       if (getCurrentInstruction() == CodeInstruction::JUMP){
 	_currentInstructionAddress ++;
-	_currentInstructionAddress = static_cast<unsigned>(unsigned getCurrentInstruction());
+	_currentInstructionAddress = static_cast<unsigned>(getCurrentInstruction());
 	return;
       }
 
@@ -65,12 +62,12 @@ namespace A
 	  valuePtr = &_literals[static_cast<unsigned>(getCurrentInstruction())];
 	}
 	else if (getCurrentInstruction() == CodeInstruction::LITERAL){
-	  valuePtr = &_memory.getLastBlockRef().getValue(static_cast<unsigned>(getCurrentInstruction()));
+	  valuePtr = &symContext.getMemoryRef().getLastBlockRef().getValue(static_cast<unsigned>(getCurrentInstruction()));
 	}
 
 	value = ;
 	
-	_memory.getLastBlockRef().allocate(*valuePtr);
+	symContext.getMemoryRef().getLastBlockRef().allocate(*valuePtr);
       }
 
       if (getCurrentInstruction() == CodeInstruction::ASSIGN){
@@ -79,22 +76,24 @@ namespace A
 	  
     }
 
-    Value getRValue()
+    Value getRValue(SymanticContext &symContext)
     {
       auto base_lambda = [](Value &value){return value};
       _currentInstructionAddress ++;
-      while (getCurrentInstruction(-1) != CodeInstruction::LITERAL &&
-	     getCurrentInstruction(-1) != CodeInstruction::STORED
+      while (symContext.getInstructionPtr().readInstruction() != CodeInstruction::LITERAL &&
+	     symContext.getInstructionPtr().readInstruction() != CodeInstruction::STORED
 	     ){
 	
-	if (getCurrentInstruction(-1) == CodeInstruction::ADD){
+	if (symContext.getInstructionPtr().readInstruction() == CodeInstruction::ADD){
 	  _stack.emplace_back();
 	}
       }
-      if (getCurrentInstruction(-1) == CodeInstruction::LITERAL){
+      if (symContext.getInstructionPtr().readInstruction() == CodeInstruction::LITERAL){
+	symContext.getInstructionPtr().advanceOverNOPs();
 	return base_lambda(getLiteral());
       }
-      if (getCurrentInstruction(-1) == CodeInstruction::STORED){
+      if (symContext.getInstructionPtr().readInstruction() == CodeInstruction::STORED){
+	symContext.getInstructionPtr().advanceOverNOPs();
 	return base_lambda(getStored());
       }
     }
@@ -102,66 +101,19 @@ namespace A
     
   private:
     std::vector<CodeInstruction> _instructions;
-    InstructionPointer _instructionPointer;
-    std::vector<Value> _stack;
     std::vector<Value> _literals;
-    Memory _memory;
 
-    const Value getLiteral()
+    const Value getLiteral(SymanticContext &symContext)
     {
-      _currentInstructionAddress ++;
-      return _literals[static_cast<unsigned>(getCurrentInstruction(-1))];
+      return _literals[static_cast<unsigned>(symContext.getInstructionPtr().getInstruction())];
     }
 
-    const Value getStored()
+    const Value getStored(SymanticContext &symContext)
     {
-      _currentInstructionAddress ++;
-      return _memory.getLastBlockRef().getValue(static_cast<unsigned>(getCurrentInstruction(-1)));
+      return symContext.getMemoryRef().getLastBlockRef().getValue(static_cast<unsigned>(symContext.getInstructionPtr().getInstruction()));
     }
     
   }
 }
 
 #endif // A_CODE_EXECUTABLE_HPP
-
-
-/*
-let int a = 3
-if a then
-a = a + 3
-else 
-a = a - 3
-end if
-
-
-{
-0   PROGRAM_START,
-1   DECLARE,
-2   TYPE_OF,
-3   1,
-4   VALUE_OF,
-5   LITERAL,
-6   0,
-7   TEST,
-8   STORED,
-9   0,
-10  12, #IF TRUE
-11  19, #IF FALSE
-12  ASSIGN,
-13  0
-14  ADD,
-15  STORED,
-16  0,
-17  LITERAL,
-18  0
-19  ASSIGN,
-20  0,
-21  SUBTRACT,
-22  STORED,
-23  0,
-24  LITERAL,
-25  0
-26  PROGRAM_END
-}
-
- */

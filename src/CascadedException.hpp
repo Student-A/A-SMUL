@@ -12,6 +12,15 @@ namespace A
   class CascadedException : public BaseException
   {
   public:
+    CascadedException(std::string str):BaseException(), _exceptionStrings({str}){}
+
+    CascadedException(std::vector<const std::string> strs):BaseException(), _exceptionStrings(strs){}
+
+    CascadedException(const CascadedException &cascadedException, std::string str):BaseException(), _exceptionStrings(cascadedException.getExceptionStrings())
+    {
+      _exceptionStrings.push_back(str);
+    }
+    
     virtual const std::string getExceptionString() const
     {
       std::string indent = "";
@@ -20,7 +29,7 @@ namespace A
 	out += indent + s + "\n";
 	indent += "--";
       }
-      return _exceptionString;
+      return out;
     }
 
     const std::vector<const std::string> &getExceptionStrings() const

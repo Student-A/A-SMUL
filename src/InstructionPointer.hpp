@@ -31,7 +31,7 @@ namespace A
       return c;
     }
     
-    char readInstruction(unsigned relativePosition) const
+    CodeInstruction readInstruction(unsigned relativePosition) const
     {
       if (_currentInstructionAddress + relativePosition >= _instructions->size()){
 	return CodeInstruction::NONE;
@@ -39,7 +39,7 @@ namespace A
       return _instructions->at(_currentInstructionAddress + relativePosition);
     }
 
-    char readInstruction() const
+    CodeInstruction readInstruction() const
     {
       if (isAtEnd()){
 	return CodeInstruction::NONE;

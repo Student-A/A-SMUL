@@ -41,7 +41,7 @@ namespace A
       _vacancies.push_back(address);
     }
 
-    Value getValue(usngiend address)
+    Value getValue(unsigned address)
     {
       return _data[address];
     }

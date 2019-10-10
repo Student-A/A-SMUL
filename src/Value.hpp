@@ -18,8 +18,8 @@ namespace A
     SWITCH = BIT(3),
     DICTIONARY = BIT(4),
     TEXT = BIT(5),
-
-    VARIANT = NONE | NUMBER | LIST | SWITCH | DICTIONARY | TEXT,
+    INTEGER = BIT(6),
+    VARIANT = NONE | NUMBER | LIST | SWITCH | DICTIONARY | TEXT | INTEGER,
   };
   ENUM_FLAG_BIN_OPERATOR(ValueType, &)
   ENUM_FLAG_BIN_OPERATOR(ValueType, |)
@@ -34,13 +34,13 @@ namespace A
       case ValueType::NONE:
 	break;
       case ValueType::NUMBER:
-	_value = static_cast<double>(*data);
+	_value = *static_cast<double*>(data);
 	break;
       case Value::TEXT:
-	_value = static_cast<std::string>(*data);
+        _value = *static_cast<std::string*>(data);
 	break;
       case ValueType::SWITCH:
-	_value = static_cast<bool>(*data);
+	_value = *static_cast<bool*>(data);
 	break;
       default:
 	//[throw wrong type]
@@ -83,7 +83,7 @@ namespace A
       _value = s;
     }
 
-    double get()
+    double getNumber()
     {
       if ((ValueType::NUMBER & _type) != ValueType::NUMBER){
 	//[throw wrong type]
@@ -91,7 +91,7 @@ namespace A
       return std::get<double>(_value);
     }
 
-    bool get()
+    bool getSwitch()
     {
       if ((ValueType::SWITCH & _type) != ValueType::SWITCH){
 	//[throw wrong type]
@@ -99,7 +99,7 @@ namespace A
       return std::get<bool>(_value);
     }
 
-    std::string get()
+    std::string getText()
     {
       if ((ValueType::TEXT & _type) != ValueType::TEXT){
 	//[throw wrong type]
@@ -107,8 +107,9 @@ namespace A
       return std::get<std::string>(_value);
     }
 
-    bool hasTypes(unsigned)
+    bool hasType(ValueType type)
     {
+      return (_type & type) != 0;
     }
     
   private:
@@ -117,8 +118,8 @@ namespace A
 		 std::vector<Value*>,
 		 bool> _value;
 
-    ValueType _type{NONE};
-    ValueType _valueType{NONE};
+    ValueType _type{A::ValueType::NONE};
+    ValueType _valueType{A::ValueType::NONE};
   };
 }
 

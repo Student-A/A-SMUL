@@ -1,23 +1,35 @@
+
 #ifndef A_SYMANTIC_CONTEXT
 #define A_SYMANTIC_CONTEXT
 
-#include "AMemory.hpp"
+#include "Memory.hpp"
+#include "InstructionPointer.hpp"
 
 namespace A
 {
   class SymanticContext
   {
   public:
-    SymanticContext()
+    SymanticContext(Memory *memory, const std::vector<CodeInstruction> &instructions): _instructionPointer(instructions)
     {
     }
 
     ~SymanticContext(){}
 
+    Memory &getMemoryRef()
+    {
+      return *_memory;
+    }
 
+    InstructionPointer &getInstructionPtr()
+    {
+      return _instructionPointer;
+    }
     
   private:
-    Memory _memory;
+    Memory *_memory;
+    std::vector<Value> _stack;
+    InstructionPointer _instructionPointer;
   };
 }
 
